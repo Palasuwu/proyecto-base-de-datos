@@ -3,11 +3,12 @@ import psycopg2
 import os
 from dotenv import load_dotenv
 from time import sleep
+import time
 
 # Cargar las variables del archivo .env
 load_dotenv()
 
-# Obtener las variables de entorno
+# Obtener las variables de entorno -- Esto se puede cambiar de manera directa a las variables si no se quiere usar el .env 
 DB_NAME = os.getenv("DB_NAME")
 DB_USER = os.getenv("DB_USER")
 DB_PASSWORD = os.getenv("DB_PASSWORD")
@@ -66,27 +67,35 @@ def mostrar_contenido_tabla(conexion):
     except ValueError:
         print("Entrada invalida. Por favor, ingrese un numero.")
 
-# Funcion para reservar un asiento
+# Funcion para reservar un asiento (sin bloqueo y con retrasos)
 def reservar_asiento(conexion, asiento_id, usuario_id, isolation_level):
     try:
-        # Establecer el nivel de aislamiento para la transaccion
+        start_time = time.time()  # Iniciar el temporizador para medir la transaccion
         cursor = conexion.cursor()
         cursor.execute(f"SET TRANSACTION ISOLATION LEVEL {isolation_level};")
         cursor.execute("BEGIN;")
         
-        # Verificar si el asiento ya esta reservado
-        cursor.execute("SELECT estado FROM asientos WHERE id_asiento = %s FOR UPDATE;", (asiento_id,))
+        # Simular un retraso para aumentar la contencion
+        sleep(0.5)
+        
+        # Verificar si el asiento ya esta reservado (sin FOR UPDATE)
+        cursor.execute("SELECT estado FROM asientos WHERE id_asiento = %s;", (asiento_id,))
         resultado = cursor.fetchone()
         
         if resultado and resultado[0] != 'activo':
             print(f"Usuario {usuario_id}: El asiento {asiento_id} ya esta reservado o inactivo.")
         else:
-            # Reservar el asiento (marcar como reservado)
+            # Simular otro retraso antes de actualizar
+            sleep(0.5)
+            
+            # Reservar el asiento
             cursor.execute("UPDATE asientos SET estado = 'reservado' WHERE id_asiento = %s;", (asiento_id,))
             print(f"Usuario {usuario_id}: Reservo el asiento {asiento_id} exitosamente.")
         
-        # Confirmar la transaccion
         conexion.commit()
+        end_time = time.time()  # Finalizar el temporizador
+        # Mostrar el tiempo transcurrido con 6 decimales
+        print(f"Usuario {usuario_id}:  se tardo  {end_time - start_time:.6f} segundos.")
     except Exception as e:
         conexion.rollback()
         print(f"Usuario {usuario_id}: Error al intentar reservar el asiento {asiento_id}: {e}")
@@ -106,6 +115,20 @@ def obtener_asientos_disponibles(conexion):
             print(f"Asiento ID: {asiento[0]} - Tipo: {asiento[2]} - Estado: {estado}")
     except Exception as e:
         print(f"Error al obtener los asientos: {e}")
+    finally:
+        cursor.close()
+
+# Funcion para reiniciar el estado de los asientos a su valor por defecto
+def reiniciar_estado_asientos(conexion):
+    try:
+        cursor = conexion.cursor()
+        # Actualizar el estado de todos los asientos a su valor por defecto
+        cursor.execute("UPDATE asientos SET estado = DEFAULT;")
+        conexion.commit()
+        print("Todos los asientos han sido reiniciados a su estado por defecto ('activo').")
+    except Exception as e:
+        conexion.rollback()
+        print(f"Error al reiniciar los estados de los asientos: {e}")
     finally:
         cursor.close()
 
@@ -150,6 +173,7 @@ def menu():
         print("3. Mostrar contenido en tablas:")
         print("4. Simular reservas de asientos")
         print("5. Salir")
+        print("6. Reiniciar estado de los asientos")
         print("--------------------------------")
 
         opcion = input("Seleccione una opcion: ")
@@ -199,6 +223,11 @@ def menu():
             print("Saliendo del programa...")
             cerrar_conexion(conexion)
             break
+        elif opcion == "6":
+            if conexion:
+                reiniciar_estado_asientos(conexion)
+            else:
+                print("Primero debe conectar a la base de datos.")
         else:
             print("Opcion no valida. Intente de nuevo.")
 
