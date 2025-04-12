@@ -205,6 +205,9 @@ Configurar la base de datos para esto se debe realizar lo siguiente:
    DB_HOST=localhost
    DB_PORT=5432
    ```
+![image](https://github.com/user-attachments/assets/d3a6d540-dc34-48e4-83b8-a43f75dd7abe)
+
+Importante: Asegurarse que tanto la contraseña como el DB_port coincidan con lo colocado previamente 
 
 ---
 
