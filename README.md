@@ -369,5 +369,5 @@ Asiento ID: 3 - Tipo: vip - Estado: Reservado o inactivo
 Conexion cerrada correctamente.
 
 ---
-
+```
 Siguiendo estos pasos, cualquier persona debería poder configurar y ejecutar el programa correctamente.
