@@ -306,6 +306,67 @@ Usuario 3: El asiento 1 ya esta reservado o inactivo.
 Usuario 4: El asiento 1 ya esta reservado o inactivo.
 Usuario 5: El asiento 1 ya esta reservado o inactivo.
 ```
+### 10. Resultado final esperado:
+# 🪑 Simulación de Reservas de Asientos
+
+```console
+Menu:
+--------------------------------
+1. Conectar a la base de datos
+2. Mostrar nombre de la base de datos
+3. Mostrar contenido en tablas:
+4. Simular reservas de asientos
+5. Salir
+6. Reiniciar estado de los asientos
+--------------------------------
+Seleccione una opcion: 4
+
+Asientos disponibles:
+Asiento ID: 3 - Tipo: vip - Estado: Disponible
+Asiento ID: 4 - Tipo: vip - Estado: Disponible
+Asiento ID: 1 - Tipo: normal - Estado: Reservado o inactivo
+Asiento ID: 2 - Tipo: normal - Estado: Reservado o inactivo
+
+Ingrese el ID del asiento a reservar: 3
+Ingrese el numero de usuarios simultaneos (5, 10, 20, 30): 5
+
+Seleccione el nivel de aislamiento:
+1. READ COMMITTED
+2. REPEATABLE READ
+3. SERIALIZABLE
+Seleccione una opcion: 2
+
+Conexion exitosa a la base de datos :)
+
+Simulando 5 usuarios con nivel de aislamiento: REPEATABLE READ
+
+Asientos disponibles:
+Asiento ID: 3 - Tipo: vip - Estado: Disponible
+Asiento ID: 4 - Tipo: vip - Estado: Disponible
+Asiento ID: 1 - Tipo: normal - Estado: Reservado o inactivo
+Asiento ID: 2 - Tipo: normal - Estado: Reservado o inactivo
+
+Usuario 1: Error al intentar reservar el asiento 3: SET TRANSACTION ISOLATION LEVEL must be called before any query
+
+Usuario 2: Reservó el asiento 3 exitosamente.
+Usuario 2:  se tardó  1.017464 segundos.
+
+Usuario 3: Reservó el asiento 3 exitosamente.
+Usuario 3:  se tardó  1.010756 segundos.
+
+Usuario 4: Reservó el asiento 3 exitosamente.
+Usuario 4:  se tardó  1.011218 segundos.
+
+Usuario 5: Reservó el asiento 3 exitosamente.
+Usuario 5:  se tardó  1.013910 segundos.
+
+Asientos disponibles:
+Asiento ID: 4 - Tipo: vip - Estado: Disponible
+Asiento ID: 1 - Tipo: normal - Estado: Reservado o inactivo
+Asiento ID: 2 - Tipo: normal - Estado: Reservado o inactivo
+Asiento ID: 3 - Tipo: vip - Estado: Reservado o inactivo
+
+Conexion cerrada correctamente.
 
 ---
 
